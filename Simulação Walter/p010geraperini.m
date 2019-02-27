@@ -21,7 +21,7 @@ function p=p010geraperini(np,f,na_i,na_a)
     %coluna 11: grau de entrada CINCO ANOS
     %coluna 12: número de edições ao ano do periódico (aleatório: 1, 2, 3, 4)
 
-p=zeros(np,11);
+p=zeros(np,12);
 for i=1:np
     p(i,1)=i;
     p(i,2)=ceil(rand(1)*f);
