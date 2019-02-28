@@ -1,5 +1,7 @@
-function an=p050geraartano(p,ano,ncit,ult,mes)
+function an=p350geraartano(p,ano,ncit,ult,mes)
 %gera "an": o conjunto de artigos anuais para cada periódico
+%exatamente igual ao p050
+%replicado por finalidade de organização: separação do processo estratégico
 %
 %parâmetros de entrada:
     %p:   lista de arquivos
@@ -58,19 +60,18 @@ switch mes
         p = p(p(:,12)== 4,:);
 end
 
-
 n_artigos=ceil(sum(p(:,5))./sum(p(:,end))); %quantidade total de artigos que serão gerados por ano  
 %divide pela quantidade de edições
 
 num_art=0;
-an=zeros(n_artigos,10);              %inicializa an
-n=size(p,1);                         %quantidade de periódicos
-for i=1:n                            %para todos os periódicos de p
-    m=p(i,2);                        %média de fitness do periódico i
-    v=p(i,3)^2;                      %variância de fitness do periódico i
-    mu = log(m^2 / sqrt(v+m^2));     %média da distribuição lognormal
-    sigma = sqrt(log(v/m^2 + 1));    %variância da distribuição lognormal
-    num_art_p=ceil(p(i,5)/p(i,end)); %quantidade anual de artigos do periódico (coluna 5)
+an=zeros(n_artigos,9);             %inicializa an
+n=size(p,1);                       %quantidade de periódicos
+for i=1:n                          %para todos os periódicos de p
+    m=p(i,2);                      %média de fitness do periódico i
+    v=p(i,3)^2;                    %variância de fitness do periódico i
+    mu = log(m^2 / sqrt(v+m^2));   %média da distribuição lognormal
+    sigma = sqrt(log(v/m^2 + 1));  %variância da distribuição lognormal
+    num_art_p=p(i,5);              %quantidade anual de artigos do periódico (coluna 5)
     for j=num_art+1:num_art+num_art_p
         an(j,1)=i;                 %numero do periódico
         an(j,2)=j+ult;             %número do artigo (sequencial com o último da base
@@ -81,6 +82,3 @@ for i=1:n                            %para todos os periódicos de p
     end%  
     num_art=num_art+num_art_p;
 end
-
-% insere a coluna 10 com a edição (mês) do periódico em que o artigo foi publicado 
-%an = [an ones(n_artigos,1)*mes];
