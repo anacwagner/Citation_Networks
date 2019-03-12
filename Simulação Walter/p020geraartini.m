@@ -1,65 +1,62 @@
 function a=p020geraartini(p,ncit)
-%gera "a": o conjunto inicial de artigos para cada periódico
+%gera "a": o conjunto inicial de artigos para cada periÃ³dico
 %
-%parâmetros de entrada:
-    %p: lista de periódicos
-    %ncit: média do número de citações dos artigos
+%parÃ¢metros de entrada:
+    %p: lista de periÃ³dicos
+    %ncit: mÃ©dia do nÃºmero de citaÃ§Ãµes dos artigos
 
-%SAÍDA
+%SAÃDA
 %formato de "a"
-    %coluna 01: código do periódico
-    %coluna 02: código do artigo
+    %coluna 01: cÃ³digo do periÃ³dico
+    %coluna 02: cÃ³digo do artigo
     %coluna 03: ano do artigo
-    %coluna 04: fitness do artigo (lognormal com parâmetros de média e desvio do periódico)
+    %coluna 04: fitness do artigo (lognormal com parÃ¢metros de mÃ©dia e desvio do periÃ³dico)
     %coluna 05: fitness acumulado
-    %coluna 06: quantidade de citações do artigo (poisson média ncit)
-    %coluna 07: grau de entrada do artigo - total de citações recebidas
+    %coluna 06: quantidade de citaÃ§Ãµes do artigo (poisson mÃ©dia ncit)
+    %coluna 07: grau de entrada do artigo - total de citaÃ§Ãµes recebidas
     %coluna 08: fitness ponderado por grau (fit*grau)
     %coluna 09: fitness ponderado acumulado
-    %coluna 10: mês em que o artigo foi publicado (controle da edição)
+    %coluna 10: mÃªs em que o artigo foi publicado (controle da ediÃ§Ã£o)
 
 %ENTRADA
 %formato de "p"
-    %coluna 01: código do periódico (sequencial)
-    %coluna 02: média de fitness dos artigos do periódico (uniforme/range 1:f)
-    %coluna 03: dp de fitness dos artigos do periódico: função da média de fitness: dp=m/2
-    %coluna 04: número inicial de artigos (poisson média na_i)
-    %coluna 05: número de artigos por ano (poisson média na_a)
-    %coluna 06: fitness médio real TOTAL
-    %coluna 07: fitness médio real DOIS ANOS
-    %coluna 08: fitness médio real CINCO ANOS
+    %coluna 01: cÃ³digo do periÃ³dico (sequencial)
+    %coluna 02: mÃ©dia de fitness dos artigos do periÃ³dico (uniforme/range 1:f)
+    %coluna 03: dp de fitness dos artigos do periÃ³dico: funÃ§Ã£o da mÃ©dia de fitness: dp=m/2
+    %coluna 04: nÃºmero inicial de artigos (poisson mÃ©dia na_i)
+    %coluna 05: nÃºmero de artigos por ano (poisson mÃ©dia na_a)
+    %coluna 06: fitness mÃ©dio real TOTAL
+    %coluna 07: fitness mÃ©dio real DOIS ANOS
+    %coluna 08: fitness mÃ©dio real CINCO ANOS
     %coluna 09: grau de entrada TOTAL
     %coluna 10: grau de entrada DOIS ANOS
     %coluna 11: grau de entrada CINCO ANOS
-    %coluna 12: número de edições ao ano do periódico (aleatório: 1, 2, 3, 4)
+    %coluna 12: nÃºmero de ediÃ§Ãµes ao ano do periÃ³dico (aleatÃ³rio: 1, 2, 3, 4)
  
 ano=0;
 mes=12;
 num_art=0;
-n_artigos=sum(p(:,4)); %quantidade total de artigos que serão gerados
+n_artigos=sum(p(:,4)); %quantidade total de artigos que serÃ£o gerados
 a=zeros(n_artigos,9);  %inicializa a
-n=size(p,1);           %quantidade de periódicos
+n=size(p,1);           %quantidade de periÃ³dicos
 
 for i=1:n
-    m=p(i,2);                     %média de fitness do periódico i
-    v=p(i,3)^2;                   %variância de fitness do periódico i
-    mu = log(m^2 / sqrt(v+m^2));  %média da distribuição lognormal
-    sigma = sqrt(log(v/m^2 + 1)); %variância da distribuição lognormal
-    num_art_p=p(i,4);             %quantidade inicial de artigos do periódico
+    m=p(i,2);                     %mÃ©dia de fitness do periÃ³dico i
+    v=p(i,3)^2;                   %variÃ¢ncia de fitness do periÃ³dico i
+    mu = log(m^2 / sqrt(v+m^2));  %mÃ©dia da distribuiÃ§Ã£o lognormal
+    sigma = sqrt(log(v/m^2 + 1)); %variÃ¢ncia da distribuiÃ§Ã£o lognormal
+    num_art_p=p(i,4);             %quantidade inicial de artigos do periÃ³dico
     
     for j=num_art+1:num_art+num_art_p
-        a(j,1)=i;                 %numero do periódico
-        a(j,2)=j;                 %número do artigo (sequencial com o último da base
+        a(j,1)=i;                 %numero do periÃ³dico
+        a(j,2)=j;                 %nÃºmero do artigo (sequencial com o Ãºltimo da base
         a(j,3)=ano;               %ano do artigo
         a(j,4)=lognrnd(mu,sigma); %fitness do artigo
-        a(j,5)=poissrnd(ncit);    %quantidade de citações
-        a(j,9)=mes;               %mês da publicação do artigo
+        a(j,5)=poissrnd(ncit);    %quantidade de citaÃ§Ãµes
+        a(j,9)=mes;               %mÃªs da publicaÃ§Ã£o do artigo
     end
     num_art=num_art+num_art_p;
 end
 
-%insere a coluna 9 de valores acumulados de fitness na 5ª coluna
+%insere a coluna 9 de valores acumulados de fitness na 5Âª coluna
 a=[a(:,1:4) cumsum(a(:,4)) a(:,5:9)];
-
-% insere a coluna 10 com a edição (mês) do periódico em que o artigo foi publicado 
-%a=[a ones(n_artigos,1)*mes];
